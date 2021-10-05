@@ -36,3 +36,6 @@ Run the following script to launch the application
 ```sh
 ./start.sh
 ```
+
+## License
+GNU GENERAL PUBLIC LICENSE
