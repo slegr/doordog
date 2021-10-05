@@ -14,15 +14,18 @@ class MyPanel(wx.Panel):
         """Constructor"""
         wx.Panel.__init__(self, parent)
         self.configs = config.get_global_config()
-        self.st = wx.StaticText(self, label="Next ID will show here")
+        self.st = wx.StaticText(self, label=self.configs['message'])
         font = self.st.GetFont()
         font.PointSize += 10
         font = font.Bold()
         self.st.SetFont(font)
 
-        img = wx.Image("doordog/assets/images/doordog_white.png", wx.BITMAP_TYPE_PNG)
-        w = int(img.GetWidth()/4)
-        h = int(img.GetHeight()/4)
+        img_path = 'doordog/' + self.configs['background-image']['path']
+        img = wx.Image(img_path, wx.BITMAP_TYPE_PNG)
+        ratio = self.configs['background-image']['ratio']
+        ratio = 0.5 if ratio < 0 else ratio
+        w = int(img.GetWidth() * ratio)
+        h = int(img.GetHeight() * ratio)
         img = img.Scale(w,h)
         self.image = wx.StaticBitmap(self, wx.ID_ANY, wx.BitmapFromImage(img))
         
@@ -71,17 +74,17 @@ class MyFrame(wx.Frame):
 
     def set_text(self, text, error):
         bgColour = wx.Colour()
-        bgColour.Set("#00ff00")
+        bgColour.Set(self.configs['alerts']['success']['background-color'])
         if error:
-            bgColour.Set("#ff0000")
+            bgColour.Set(self.configs['alerts']['error']['background-color'])
         self.panel.SetBackgroundColour(colour=bgColour)
         self.panel.st.SetLabel(text)
         self.panel.st.SetForegroundColour((0,0,0,255))
         self.timer.Start(1000, oneShot=wx.TIMER_ONE_SHOT)
-        if error: 
-            playsound('doordog/assets/audio/bad.mp3') 
-        else:
-            playsound('doordog/assets/audio/good_1.wav')
+        sound = 'doordog/' + self.configs['alerts']['success']['sound']
+        if error:
+            sound = 'doordog/' + self.configs['alerts']['success']['sound']
+        playsound(sound)
 
     def reset(self, event):
         self.panel.st.SetForegroundColour((255,255,255,255))
