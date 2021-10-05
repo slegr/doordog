@@ -101,7 +101,8 @@ class DeviceListener:
         uid = []
         try:
             while not self.stopped:
-                if event := self.device.read_one():
+                event = self.device.read_one()
+                if event:
                     if event.type == evdev.ecodes.EV_KEY and event.value == 1:
                         e_code = event.code - 1
                         # print(event.code)
