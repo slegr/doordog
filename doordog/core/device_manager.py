@@ -6,11 +6,18 @@ import json
 from time import sleep
 import threading
 import wx
+from datetime import datetime
 import doordog.events.read_tag as evt
 import doordog.utils.configs as config
 
-########################################################################
+
 class DeviceManager(threading.Thread):
+    """
+    A class who manages all the devices connected to the machine and finds the ones 
+    with the names specified in config.yml
+    The object returned is a Thread and needs to be started with the start() method.
+    To stop the thread, simply call stop() on the object
+    """
     #---------------------------------------------------------------------
     def __init__(self):
         threading.Thread.__init__(self)
@@ -76,28 +83,35 @@ class DeviceManager(threading.Thread):
         for device in self.listening_devices:
             print(device.get_name())
 
-########################################################################
+
 class DeviceListener:
+    """
+    A class who represent a listener on a specific reader device.
+    The object should not be created on its own without management.
+    It is prefered to let this responsability to the DeviceManager.
+    """
     #---------------------------------------------------------------------
     def __init__(self, device):
         self.device = device
         self.configs = config.get_global_config()
         self.device.grab()
-        self.thread = threading.Thread(target=self.listening_loop, daemon=True)
+        self.thread = threading.Thread(target=self.loop, daemon=True)
         self.stopped = False
         print('New Device: ', self.get_name(), self.device.path)
         self.thread.start()
 
+    #---------------------------------------------------------------------
     def stop(self):
         self.stopped = True
         self.device.ungrab()
         self.thread.join()
 
+    #---------------------------------------------------------------------
     def set_frame_ref(self, frame_ref):
         self.frame_ref = frame_ref
 
     #---------------------------------------------------------------------
-    def listening_loop(self):
+    def loop(self):
         uid = []
         try:
             while not self.stopped:
@@ -124,12 +138,14 @@ class DeviceListener:
 
     #---------------------------------------------------------------------
     def code_scanned(self, uid):
-        formatedUID = uid=(''.join(uid)) 
-        # response = requests.post("http://raspberrypi/api/scan/", data=parameters, timeout=3)
-        response = requests.post(self.configs['endpoint']['url'], timeout=3)
-        # Notify.Notification.new("Hi").show()
+        formatedUID = uid=(''.join(uid))
+        parameters = {
+            'reader': self.get_name(),
+            'uid': formatedUID,
+            'when': str(datetime.now())
+        }
+        response = requests.post(self.configs['endpoint']['url'], data=parameters, timeout=3)
         if response.status_code == 200 or response.status_code == 201:
-            # self.jprint(response.json())
             error = False
 
             # TO CHANGE!! Just for testing purpose!
@@ -139,7 +155,7 @@ class DeviceListener:
             newEvt = evt.OnReadTagEvent(reader=self.get_name(), uid=formatedUID, error=error)
             wx.PostEvent(self.frame_ref, newEvt)
         elif response.status_code == 404:
-            print("Unknown tag or reader.")
+            print(response)
         else:
             print(response)
 
