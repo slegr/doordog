@@ -1,5 +1,5 @@
 ---
-  global_config:
+  global-config:
     # Title to display in titlebar
     window-title: "Door Dog - Universal RFID Scanner system"
     # Image to display in background of each window
