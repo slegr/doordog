@@ -6,7 +6,7 @@
 # Get current user (not root)
 user=$USER
 
-# Get list of device names entered in config.yml
+# TODO: Get list of device names entered in config.yml
 
 # Get list of devices with
 inputs=($(cat /proc/bus/input/devices | grep -4 Sycreader | grep H: | cut -f4 -d' '))

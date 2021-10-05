@@ -8,7 +8,10 @@ import doordog.events.read_tag as evt
 import doordog.utils.configs as config
 
 class MyPanel(wx.Panel):
-    """"""
+    """
+    A class who represent a Panel in a parent Window and a window only contains
+    a single panel.
+    """
     #----------------------------------------------------------------------
     def __init__(self, parent):
         """Constructor"""
@@ -51,7 +54,11 @@ class MyPanel(wx.Panel):
 
 
 class MyFrame(wx.Frame):
-    """"""
+    """
+    A class who represent a Frame (Window) which contains a single Panel.
+    This class is also responsible for watching tag events and  editing its panel
+    appearence.
+    """
     #----------------------------------------------------------------------
     def __init__(self, pos):
         """Constructor"""
@@ -71,9 +78,11 @@ class MyFrame(wx.Frame):
             self.Show()
             # self.Maximize(True)
 
+    #----------------------------------------------------------------------
     def on_read(self, evt):
         self.set_text(evt.uid, evt.error)
 
+    #----------------------------------------------------------------------
     def set_text(self, text, error):
         bg_colour = wx.Colour()
         fg_colour = wx.Colour()
@@ -96,6 +105,7 @@ class MyFrame(wx.Frame):
         # Play sound in parallel with timer
         playsound(sound)
 
+    #----------------------------------------------------------------------
     def reset(self, event):
         bg_colour = wx.Colour()
         fg_colour = wx.Colour()
