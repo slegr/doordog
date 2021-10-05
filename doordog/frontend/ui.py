@@ -5,6 +5,7 @@ import wx.lib.newevent
 import wx.adv
 from playsound import playsound
 import doordog.events.read_tag as evt
+import doordog.utils.configs as config
 
 class MyPanel(wx.Panel):
     """"""
@@ -12,6 +13,7 @@ class MyPanel(wx.Panel):
     def __init__(self, parent):
         """Constructor"""
         wx.Panel.__init__(self, parent)
+        self.configs = config.get_global_config()
         self.st = wx.StaticText(self, label="Next ID will show here")
         font = self.st.GetFont()
         font.PointSize += 10
@@ -50,24 +52,29 @@ class MyFrame(wx.Frame):
     #----------------------------------------------------------------------
     def __init__(self, pos):
         """Constructor"""
-        wx.Frame.__init__(self, None, title="Lan ETS - RFID Scanner", pos=pos)
+        self.configs = config.get_global_config()
+        wx.Frame.__init__(self, None, title=self.configs['window-title'], pos=pos)
         self.panel = MyPanel(self)
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.reset, self.timer)
         self.Bind(evt.EVT_ON_READ_TAG_EVENT, self.on_read)
-        # Enable full screen at event
-        # self.ShowFullScreen(True)
-        self.Show()
-        # self.Maximize(True)
+        
+        if self.configs['monitors']['fullscreen']:    
+            # Make sure to enable fullscreen at event
+            self.ShowFullScreen(True)
+        else:
+            self.Show()
+            # self.Maximize(True)
 
     def on_read(self, evt):
         self.set_text(evt.uid, evt.error)
 
     def set_text(self, text, error):
+        bgColour = wx.Colour()
+        bgColour.Set("#00ff00")
         if error:
-            self.panel.SetBackgroundColour((255,0,0,255))
-        else:
-            self.panel.SetBackgroundColour((0,255,0,255))
+            bgColour.Set("#ff0000")
+        self.panel.SetBackgroundColour(colour=bgColour)
         self.panel.st.SetLabel(text)
         self.panel.st.SetForegroundColour((0,0,0,255))
         self.timer.Start(1000, oneShot=wx.TIMER_ONE_SHOT)

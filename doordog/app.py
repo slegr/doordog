@@ -8,9 +8,8 @@ class DoorDog:
     """"""
     def __init__(self):
         self.configs = config.get_global_config()
-        self.device_name = self.configs['devices']['names'][0]
         self.app = wx.App(False)
-        self.device_manager = dm.DeviceManager(self.device_name)
+        self.device_manager = dm.DeviceManager()
         self.devices = self.device_manager.get_devices()
         self.frames = {}
         self.start()

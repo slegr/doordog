@@ -7,25 +7,26 @@ from time import sleep
 import threading
 import wx
 import doordog.events.read_tag as evt
+import doordog.utils.configs as config
 
 ########################################################################
 class DeviceManager(threading.Thread):
     #---------------------------------------------------------------------
-    def __init__(self, device_name):
+    def __init__(self):
         threading.Thread.__init__(self)
+        self.configs = config.get_global_config()
         self.setDaemon(1)
         self.lock = threading.Lock()
         self.stopped = False
         self.lock.acquire()
         self.listening_devices = []
-        self.device_name = device_name
+        # To change with for all possible names in config.yml
+        self.device_name = self.configs['devices']['names'][0]
         self.update_devices()
 
     #---------------------------------------------------------------------
     def run(self):
         self.lock.release()
-        print(self.device_name)
-        print("Ready to read...")
         while not self.stopped:
             self.update_devices()
             sleep(1)
@@ -80,11 +81,12 @@ class DeviceListener:
     #---------------------------------------------------------------------
     def __init__(self, device):
         self.device = device
+        self.configs = config.get_global_config()
         self.device.grab()
         self.thread = threading.Thread(target=self.listening_loop, daemon=True)
         self.stopped = False
+        print('New Device: ', self.get_name(), self.device.path)
         self.thread.start()
-        print(self.get_name(), self.device.path)
 
     def stop(self):
         self.stopped = True
@@ -123,13 +125,16 @@ class DeviceListener:
     def code_scanned(self, uid):
         formatedUID = uid=(''.join(uid)) 
         # response = requests.post("http://raspberrypi/api/scan/", data=parameters, timeout=3)
-        response = requests.post("https://lanets.ca/health", timeout=3)
+        response = requests.post(self.configs['endpoint']['url'], timeout=3)
         # Notify.Notification.new("Hi").show()
         if response.status_code == 200 or response.status_code == 201:
             # self.jprint(response.json())
             error = False
+
+            # TO CHANGE!! Just for testing purpose!
             if formatedUID == "22211722":
                 error = True
+
             newEvt = evt.OnReadTagEvent(reader=self.get_name(), uid=formatedUID, error=error)
             wx.PostEvent(self.frame_ref, newEvt)
         elif response.status_code == 404:
