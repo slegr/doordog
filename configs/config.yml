@@ -3,7 +3,9 @@
     # Title to display in titlebar
     window-title: "Door Dog - Universal RFID Scanner system"
     # Image to display in background of each window
-    background-image: "assets/images/doordog_white.png"
+    background-image:
+      path: "assets/images/doordog_white.png"
+      ratio: 1
     # Message to display on each window
     message: "Bienvenue!"
     # Monitors settings
@@ -23,7 +25,7 @@
         sound: "assets/audio/good_1.wav"
         background-color: green
       error:
-        sound: "assets/audio/good_1.wav"
+        sound: "assets/audio/bad.mp3"
         background-color: red
     # Endpoint API to poke when scanning new tag and receive a result to display
     endpoint:
