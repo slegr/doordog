@@ -1,4 +1,4 @@
-wxPython >= 4.0
+# wxPython >= 4.0
 evdev >= 1.4
 playsound >= 1.3
 shyaml >= 0.6.2
