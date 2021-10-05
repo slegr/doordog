@@ -11,7 +11,7 @@
 
 ## General info
 DoorDog is a boilerplate project for an event entrance/exit scan. It currently supports 13.56M RFID/NFC readers and tags.
-It is built on python 3.8 and uses wxpython as GUI.
+It is built on python 3.8 and uses wxpython as GUI. In other words, DoorDog is a basic autonomous service waiting to scan new tags and post to a specific URL where the data will be stored and processed. The request response then determine audio and visual feedback to participants via the GUI.
 
 ## Requirements
 - Debian like environment (Ubuntu, Raspbian, etc.)
