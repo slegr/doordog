@@ -1,10 +1,17 @@
 # DoorDog 
 ![doordog_white](https://user-images.githubusercontent.com/17283078/135960499-7a949665-9fb9-41ea-9fa2-d746f8846987.png)
+**[![Python package](https://github.com/slegr/doordog/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/slegr/doordog/actions/workflows/python-package.yml)**
 
+## Table of contents
+* [General info](#general-info)
+* [Requirements](#requirements)
+* [Setup and Installation](#setup-and-installation)
+* [How to use](#how-to-use)
+* [License](#license)
+
+## General info
 DoorDog is a boilerplate project for an event entrance/exit scan. It currently supports 13.56M RFID/NFC readers and tags.
 It is built on python 3.8 and uses wxpython as GUI.
-
-**[![Python package](https://github.com/slegr/doordog/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/slegr/doordog/actions/workflows/python-package.yml)**
 
 ## Requirements
 - Debian like environment (Ubuntu, Raspbian, etc.)
