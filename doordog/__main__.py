@@ -1,7 +1,8 @@
 """"""
+from doordog.app import DoorDog
 
 def main(args=None):
-    pass
-
+    DoorDog()
+    
 if __name__ == '__main__':
     main()

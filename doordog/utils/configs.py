@@ -5,3 +5,6 @@ with open("./configs/config.yml") as f:
 
 def get_config():
     return configObj
+
+def get_global_config():
+    return configObj['global-config']
