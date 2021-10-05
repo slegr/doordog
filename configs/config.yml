@@ -6,6 +6,8 @@
     background-image:
       path: "assets/images/doordog_white.png"
       ratio: 1
+    background-color: "#000000"
+    foreground-color: "#ffffff"
     # Message to display on each window
     message: "Please scan here!"
     # Monitors settings
@@ -24,9 +26,11 @@
       success:
         sound: "assets/audio/good_1.wav"
         background-color: "#00ff00"
+        foreground-color: "#000000"
       error:
         sound: "assets/audio/bad.mp3"
         background-color: "#ff0000"
+        foreground-color: "#000000"
     # Endpoint API to poke when scanning new tag and receive a result to display
     endpoint:
       url: "https://lanets.ca/health"

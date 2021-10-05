@@ -61,6 +61,8 @@ class MyFrame(wx.Frame):
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.reset, self.timer)
         self.Bind(evt.EVT_ON_READ_TAG_EVENT, self.on_read)
+
+        self.reset(None)
         
         if self.configs['monitors']['fullscreen']:    
             # Make sure to enable fullscreen at event
@@ -73,19 +75,31 @@ class MyFrame(wx.Frame):
         self.set_text(evt.uid, evt.error)
 
     def set_text(self, text, error):
-        bgColour = wx.Colour()
-        bgColour.Set(self.configs['alerts']['success']['background-color'])
+        bg_colour = wx.Colour()
+        fg_colour = wx.Colour()
         if error:
-            bgColour.Set(self.configs['alerts']['error']['background-color'])
-        self.panel.SetBackgroundColour(colour=bgColour)
+            bg_colour.Set(self.configs['alerts']['error']['background-color'])
+            fg_colour.Set(self.configs['alerts']['success']['foreground-color'])
+        else:
+            bg_colour.Set(self.configs['alerts']['success']['background-color'])
+            fg_colour.Set(self.configs['alerts']['success']['foreground-color'])
+        # Set new colours values on widgets
+        self.panel.SetBackgroundColour(colour=bg_colour)
         self.panel.st.SetLabel(text)
-        self.panel.st.SetForegroundColour((0,0,0,255))
-        self.timer.Start(1000, oneShot=wx.TIMER_ONE_SHOT)
+        self.panel.st.SetForegroundColour(colour=fg_colour)
+        # Set sound notif
         sound = 'doordog/' + self.configs['alerts']['success']['sound']
         if error:
             sound = 'doordog/' + self.configs['alerts']['success']['sound']
+        # Launch timer to reset ui
+        self.timer.Start(1000, oneShot=wx.TIMER_ONE_SHOT)
+        # Play sound in parallel with timer
         playsound(sound)
 
     def reset(self, event):
-        self.panel.st.SetForegroundColour((255,255,255,255))
-        self.panel.SetBackgroundColour((0,0,0,255))
+        bg_colour = wx.Colour()
+        fg_colour = wx.Colour()
+        bg_colour.Set(self.configs['background-color'])
+        fg_colour.Set(self.configs['foreground-color'])
+        self.panel.st.SetForegroundColour(fg_colour)
+        self.panel.SetBackgroundColour(bg_colour)
