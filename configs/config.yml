@@ -1,1 +1,40 @@
-""""""
+---
+  global_config:
+    # Title to display in titlebar
+    window-title: "Door Dog - Universal RFID Scanner system"
+    # Image to display in background of each window
+    background-image: "assets/images/doordog_white.png"
+    # Message to display on each window
+    message: "Bienvenue!"
+    # Monitors settings
+    monitors:
+      count: 2
+      default-resolution: 
+        width: 1920
+        height: 1080
+      fullscreen: true
+    # Scanner devices settings
+    devices:
+      names:
+        - "Sycreader RFID Technology Co., Ltd SYC ID&IC USB Reader"
+    # Alerts settings (Feedback on API responses)
+    alerts:
+      success:
+        sound: "assets/audio/good_1.wav"
+        background-color: green
+      error:
+        sound: "assets/audio/good_1.wav"
+        background-color: red
+    # Endpoint API to poke when scanning new tag and receive a result to display
+    endpoint:
+      url: "https://lanets.ca/health"
+      request-structure:
+        - reader_id
+        - tag_id
+      response-structure:
+        success:
+          - username
+        error:
+          - error
+
+      
