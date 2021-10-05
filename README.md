@@ -47,5 +47,8 @@ Run the following script to launch the application
 ./start.sh
 ```
 
+## Authors
+- slegr - https://github.com/slegr
+
 ## License
 GNU GENERAL PUBLIC LICENSE
