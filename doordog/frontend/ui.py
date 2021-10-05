@@ -99,7 +99,7 @@ class MyFrame(wx.Frame):
         # Set sound notif
         sound = 'doordog/' + self.configs['alerts']['success']['sound']
         if error:
-            sound = 'doordog/' + self.configs['alerts']['success']['sound']
+            sound = 'doordog/' + self.configs['alerts']['error']['sound']
         # Launch timer to reset ui
         self.timer.Start(1000, oneShot=wx.TIMER_ONE_SHOT)
         # Play sound in parallel with timer

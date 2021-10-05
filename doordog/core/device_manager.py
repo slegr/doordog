@@ -141,7 +141,7 @@ class DeviceListener:
         formatedUID = uid=(''.join(uid))
         parameters = {
             'reader': self.get_name(),
-            'uid': formatedUID,
+            'uid': uid,
             'when': str(datetime.now())
         }
         response = requests.post(self.configs['endpoint']['url'], data=parameters, timeout=3)
@@ -152,8 +152,12 @@ class DeviceListener:
             if formatedUID == "22211722":
                 error = True
 
-            newEvt = evt.OnReadTagEvent(reader=self.get_name(), uid=formatedUID, error=error)
-            wx.PostEvent(self.frame_ref, newEvt)
+            try:
+                newEvt = evt.OnReadTagEvent(reader=self.get_name(), uid=formatedUID, error=error)
+                wx.PostEvent(self.frame_ref, newEvt)
+            except RuntimeError:
+                print("Error: Frame assigned to reader", self.get_name(), "have been closed!")
+
         elif response.status_code == 404:
             print(response)
         else:
