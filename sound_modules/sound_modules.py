@@ -85,13 +85,11 @@ def test_func(func):
     func()
     sleep(1)
 
-
-sleep(1)
 # test_func(test_playsound)
 test_func(test_pydub)
 # test_func(test_mpg123)
 # test_func(test_audioplayer)
 test_func(test_simpleaudio)
 test_func(test_pygame)
-test_func(test_wxpyton)
+# test_func(test_wxpyton)
 # test_func(test_pyaudio)
