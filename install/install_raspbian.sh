@@ -27,3 +27,12 @@ sudo apt install -y libjpeg-dev libtiff5-dev libnotify-dev libgtk2.0-dev libgtk-
 # Install pip dependencies
 sudo pip3 install evdev
 pip3 install -r requirements.txt
+
+# Add script to start on boot
+cat << EOF >> /etc/profile
+if [ "$DISPLAY" ]; then 
+        cd /home/pi/doordog && bash ./start.sh &
+fi
+EOF
+
+
