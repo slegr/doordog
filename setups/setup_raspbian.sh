@@ -36,4 +36,4 @@ sudo apt-get install -y dpkg-dev build-essential libjpeg-dev libtiff-dev libsdl1
 
 sudo apt-get install -y build-essential tk-dev libncurses5-dev libncursesw5-dev libreadline6-dev libdb5.3-dev libgdbm-dev libsqlite3-dev libssl-dev libbz2-dev libexpat1-dev liblzma-dev zlib1g-dev
 
-sudo apt install libjpeg-dev libtiff5-dev libnotify-dev libgtk2.0-dev libgtk-3-dev libsdl1.2-dev libgstreamer-plugins-base0.10-dev libwebkitgtk-dev freeglut3 freeglut3-dev
+sudo apt install -y libjpeg-dev libtiff5-dev libnotify-dev libgtk2.0-dev libgtk-3-dev libsdl1.2-dev libgstreamer-plugins-base0.10-dev libwebkitgtk-dev freeglut3 freeglut3-dev
