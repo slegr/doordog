@@ -29,7 +29,7 @@ sudo pip3 install evdev
 pip3 install -r requirements.txt
 
 # Add script to start on boot
-cat << EOF >> /etc/profile
+sudo cat << EOF >> /etc/profile
 if [ "$DISPLAY" ]; then 
         cd /home/pi/doordog && bash ./start.sh &
 fi
