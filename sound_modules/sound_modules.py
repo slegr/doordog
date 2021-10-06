@@ -1,5 +1,6 @@
 from playsound import playsound
 import wx.adv
+import wx
 from pygame import mixer
 from pydub import AudioSegment
 from pydub.playback import play
@@ -63,17 +64,34 @@ def test_pygame():
     # Start playing the song
     mixer.music.play()
 
+class MyFrame(wx.Frame):
+    def __init__(self):
+        wx.Frame.__init__(self, None, title="wx.Sound",size=(500,100))
+        p = wx.Panel(self)
+        self.sound = wx.adv.Sound(soundpath)
+        if self.sound.IsOk():
+            self.sound.Play(wx.adv.SOUND_ASYNC)
+
+def test_wxpyton():
+    app = wx.App()
+    frm = MyFrame()
+    frm.Show()
+    app.MainLoop()
+    
+
 def test_func(func):
+    print("-------------------------------------------")
     print("Test: " + func.__name__)
     func()
     sleep(1)
 
 
 sleep(1)
-test_func(test_playsound)
+# test_func(test_playsound)
 test_func(test_pydub)
-test_func(test_mpg123)
-test_func(test_audioplayer)
+# test_func(test_mpg123)
+# test_func(test_audioplayer)
 test_func(test_simpleaudio)
 test_func(test_pygame)
-test_func(test_pyaudio)
+test_func(test_wxpyton)
+# test_func(test_pyaudio)
