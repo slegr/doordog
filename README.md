@@ -16,7 +16,7 @@ It is built on python 3.8 and uses wxpython as GUI. In other words, DoorDog is a
 ## Requirements
 - Debian like environment (Ubuntu, Raspbian, etc.)
 - Python 3.8
-- wxPython
+- wxPython (installed with installation scripts)
 
 ## Setup and Installation
 
@@ -25,9 +25,9 @@ First we need to install all required dependencies. There is an installation scr
 git clone https://github.com/slegr/doordog
 cd doordog
 # Setup for ubuntu 20.04
-./setups/setup_ubuntu.sh
+./install/install_ubuntu_20.04.sh
 # Setup for Raspbian
-./setups/setup_rpi.sh
+./install/install_raspbian.sh
 ```
 
 ## How to use

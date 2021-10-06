@@ -1,7 +1,7 @@
 #!/bin/bash
 
 # Installation script for Ubuntu 20.04 systems
-# simply run ./setup_ubuntu.sh
+# simply run ./install_ubuntu.sh
 
 # Install dependencies
 sudo apt update
