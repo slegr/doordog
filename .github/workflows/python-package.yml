@@ -1,7 +1,7 @@
 # This workflow will install Python dependencies, run tests and lint with a variety of Python versions
 # For more information see: https://help.github.com/actions/language-and-framework-guides/using-python-with-github-actions
 
-name: Python package
+name: Python app & yaml
 
 on: [push, pull_request]
 
@@ -34,3 +34,9 @@ jobs:
     - name: Test with pytest
       run: |
         pytest
+  yaml-lint:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: yaml-lint
+      uses: ibiqlik/action-yamllint@v3
