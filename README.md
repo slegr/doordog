@@ -28,6 +28,9 @@ cd doordog
 ./install/install_ubuntu_20.04.sh
 # Setup for Raspbian
 ./install/install_raspbian.sh
+# On Raspbian (Raspberry Pi OS), the installator add ./start.sh script to run on boot
+# Make sure to reboot
+sudo reboot
 ```
 
 ## How to use
