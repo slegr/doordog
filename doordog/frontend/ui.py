@@ -2,8 +2,7 @@
 
 import wx
 import wx.lib.newevent
-import wx.adv
-from playsound import playsound
+from pygame import mixer
 import doordog.events.read_tag as evt
 import doordog.utils.configs as config
 
@@ -100,10 +99,16 @@ class MyFrame(wx.Frame):
         sound = 'doordog/' + self.configs['alerts']['success']['sound']
         if error:
             sound = 'doordog/' + self.configs['alerts']['error']['sound']
+        # Starting the mixer
+        mixer.init()
+        # Loading the song
+        mixer.music.load(sound)
+        # Setting the volume
+        mixer.music.set_volume(1)
         # Launch timer to reset ui
         self.timer.Start(1000, oneShot=wx.TIMER_ONE_SHOT)
-        # Play sound in parallel with timer
-        playsound(sound)
+        # Start playing the song in parallel
+        mixer.music.play()
 
     #----------------------------------------------------------------------
     def reset(self, event):
