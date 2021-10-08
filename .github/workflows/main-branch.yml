@@ -1,7 +1,11 @@
 ---
-name: Python app & yaml
-
-on: [push, pull_request]
+name: Python & yaml - Main
+author: slegr
+description: Test Python app & yaml files on main
+on:
+  push:
+    branches:
+      - 'main'
 
 jobs:
   build:

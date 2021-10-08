@@ -1,9 +1,14 @@
 ---
 name: Bump version
+author: slegr
+description: Bump version/tag only when test workflow passes
+# Only trigger, when the build workflow succeeded
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Python & yaml - Main"]
+    types:
+      - completed
+
 jobs:
   build:
     runs-on: ubuntu-latest
