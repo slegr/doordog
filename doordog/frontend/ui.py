@@ -1,5 +1,6 @@
 """"""
 
+from typing import final
 import wx
 import wx.lib.newevent
 from pygame import mixer
@@ -99,16 +100,22 @@ class MyFrame(wx.Frame):
         sound = 'doordog/' + self.configs['alerts']['success']['sound']
         if error:
             sound = 'doordog/' + self.configs['alerts']['error']['sound']
+
         # Starting the mixer
         mixer.init()
-        # Loading the song
-        mixer.music.load(sound)
-        # Setting the volume
-        mixer.music.set_volume(1)
         # Launch timer to reset ui
         self.timer.Start(1000, oneShot=wx.TIMER_ONE_SHOT)
-        # Start playing the song in parallel
-        mixer.music.play()
+        try:
+            # Loading the song
+            mixer.music.load(sound)
+            # Setting the volume
+            mixer.music.set_volume(1)
+            # Start playing the song in parallel
+            mixer.music.play()
+        except Exception as e:
+            print(e)
+        finally:
+            pass
 
     #----------------------------------------------------------------------
     def reset(self, event):
