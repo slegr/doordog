@@ -1,9 +1,13 @@
 ---
 name: Bump version
+
+# Only trigger, when the build workflow succeeded
 on:
-  push:
-    branches:
-      - main
+  workflow_run:
+    workflows: ["Python & yaml - Main"]
+    types:
+      - completed
+
 jobs:
   build:
     runs-on: ubuntu-latest

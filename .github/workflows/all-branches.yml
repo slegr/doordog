@@ -1,5 +1,5 @@
 ---
-name: Python app & yaml
+name: Python & yaml - All
 
 on: [push, pull_request]
 
