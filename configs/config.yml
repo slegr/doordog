@@ -24,11 +24,13 @@ global-config:
   # Alerts settings (Feedback on API responses)
   alerts:
     success:
+      # support wav or ogg
       sound: "assets/audio/good_1.wav"
       background-color: "#00ff00"
       foreground-color: "#000000"
     error:
-      sound: "assets/audio/bad.mp3"
+      # support wav or ogg
+      sound: "assets/audio/bad_1.wav"
       background-color: "#ff0000"
       foreground-color: "#000000"
   # Endpoint API to poke when scanning new tag and receive a result to display
