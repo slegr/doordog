@@ -1,7 +1,6 @@
 ---
 name: Python & yaml - Main
-author: slegr
-description: Test Python app & yaml files on main
+
 on:
   push:
     branches:

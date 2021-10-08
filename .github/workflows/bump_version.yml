@@ -1,7 +1,6 @@
 ---
 name: Bump version
-author: slegr
-description: Bump version/tag only when test workflow passes
+
 # Only trigger, when the build workflow succeeded
 on:
   workflow_run:

@@ -1,7 +1,6 @@
 ---
 name: Python & yaml - All
-author: slegr
-description: Test Python app & yaml files on all branches
+
 on: [push, pull_request]
 
 jobs:
