@@ -44,3 +44,6 @@ global-config:
         - username
       error:
         - error
+  # Blocked Tags will always display an error and will not post to endpoint
+  # Especially usefull to test behaviours before using in production
+  blocked-tags: ["22211722"]
