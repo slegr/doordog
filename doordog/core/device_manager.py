@@ -144,24 +144,25 @@ class DeviceListener:
             'uid': uid,
             'when': str(datetime.now())
         }
-        response = requests.post(self.configs['endpoint']['url'], data=parameters, timeout=3)
-        if response.status_code == 200 or response.status_code == 201:
-            error = False
-
-            # TO CHANGE!! Just for testing purpose!
-            if formatedUID == "22211722":
-                error = True
-
-            try:
-                newEvt = evt.OnReadTagEvent(reader=self.get_name(), uid=formatedUID, error=error)
-                wx.PostEvent(self.frame_ref, newEvt)
-            except RuntimeError:
-                print("Error: Frame assigned to reader", self.get_name(), "have been closed!")
-
-        elif response.status_code == 404:
-            print(response)
-        else:
-            print(response)
+        # Check for blocked tags
+        blocked_tags = self.configs['blocked-tags']
+        if blocked_tags and formatedUID in blocked_tags:
+            self.post_event(formatedUID, True)
+        else:    
+            response = requests.post(self.configs['endpoint']['url'], data=parameters, timeout=3)
+            if response.status_code == 200 or response.status_code == 201:
+                self.post_event(formatedUID, False)
+            elif response.status_code == 404:
+                print(response)
+            else:
+                print(response)
+    #---------------------------------------------------------------------
+    def post_event(self, uid, error):
+        try:
+            newEvt = evt.OnReadTagEvent(reader=self.get_name(), uid=uid, error=error)
+            wx.PostEvent(self.frame_ref, newEvt)
+        except RuntimeError:
+            print("Error: Frame assigned to reader", self.get_name(), "have been closed!")
 
     #---------------------------------------------------------------------
     def jprint(self, obj):
