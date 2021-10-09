@@ -2,6 +2,7 @@
 import doordog.core.device_manager as dm
 import doordog.frontend.ui as ui
 import doordog.utils.configs as config
+import doordog.utils.logger as logger
 import wx
 
 class DoorDog:
@@ -14,6 +15,7 @@ class DoorDog:
     """
     #---------------------------------------------------------------------
     def __init__(self):
+        logger.info("DoorDog launching...")
         self.app = wx.App(False)
         self.device_manager = dm.DeviceManager()
         self.devices = self.device_manager.get_devices()

@@ -3,9 +3,13 @@
 from typing import final
 import wx
 import wx.lib.newevent
-from pygame import mixer
 import doordog.events.read_tag as evt
 import doordog.utils.configs as config
+import doordog.utils.logger as logger
+import os
+# this line allows to hide annoying welcome message from pygame on loading
+os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
+from pygame import mixer
 
 class MyPanel(wx.Panel):
     """
@@ -22,15 +26,16 @@ class MyPanel(wx.Panel):
         font.PointSize += 10
         font = font.Bold()
         self.st.SetFont(font)
-
+        # collect configs
         img_path = 'doordog/' + self.configs['background-image']['path']
-        img = wx.Image(img_path, wx.BITMAP_TYPE_PNG)
         ratio = self.configs['background-image']['ratio']
+        # Create Image
+        img = wx.Image(img_path, wx.BITMAP_TYPE_PNG)
         ratio = 0.5 if ratio < 0 else ratio
         w = int(img.GetWidth() * ratio)
         h = int(img.GetHeight() * ratio)
-        img = img.Scale(w,h)
-        self.image = wx.StaticBitmap(self, wx.ID_ANY, wx.BitmapFromImage(img))
+        img = wx.Image(img.Scale(w,h))
+        self.image = wx.StaticBitmap(self, wx.ID_ANY, img.ConvertToBitmap())
         
         self.sizer = wx.BoxSizer(wx.VERTICAL)
         self.sizer.AddStretchSpacer()
@@ -113,7 +118,8 @@ class MyFrame(wx.Frame):
             # Start playing the song in parallel
             mixer.music.play()
         except Exception as e:
-            print(e)
+            # print(e)
+            logger.error(e)
         finally:
             pass
 
