@@ -34,16 +34,9 @@ global-config:
       background-color: "#ff0000"
       foreground-color: "#000000"
   # Endpoint API to poke when scanning new tag and receive a result to display
-  endpoint:
-    url: "https://lanets.ca/health"
-    request-structure:
-      - reader_id
-      - tag_id
-    response-structure:
-      success:
-        - username
-      error:
-        - error
+  endpoints:
+    post-scan: "https://lanets.ca/health"
+    post-logs: "https://lanets.ca/health"
   # Blocked Tags will always display an error and will not post to endpoint
   # Especially usefull to test behaviours before using in production
   blocked-tags: ["22211722"]
