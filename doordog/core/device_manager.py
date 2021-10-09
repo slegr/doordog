@@ -145,7 +145,7 @@ class DeviceListener:
             logger.warning("Tag " + formatedUID + " is blocked!")
             self.post_event(formatedUID, True)
         else:
-            endpoint = self.configs['endpoint']['url']
+            endpoint = self.configs['endpoints']['post-scan']
             response = requests.post(endpoint, data=data, timeout=3)
             logger.info("Response from " + endpoint + " - Status code = " + str(response.status_code))
             if response.status_code == 200 or response.status_code == 201:

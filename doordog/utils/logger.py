@@ -1,11 +1,13 @@
 """"""
+from datetime import datetime
 from doordog.utils.configs import get_global_config
 from colorama import Fore, Back, Style
 import requests
+from datetime import datetime
 
 configs = get_global_config()
 # Define the endpoint here
-logs_endpoint = None
+logs_endpoint = configs['endpoints']['post-logs']
 # Styles
 padding = 8
 type_colors = {
@@ -17,9 +19,14 @@ type_colors = {
 # Accumulated logs
 logs = []
 
+def get_time():
+    return datetime.now().strftime("%m/%d/%Y %H:%M:%S")
+
 def log(type, message):
-    logs.append({type: type, message: message})
-    print(type_colors[type], type.ljust(padding), ":", message, Style.RESET_ALL)
+    cur_time = get_time()
+    logs.append({'type': type, 'message': message, 'datetime': cur_time})
+    # print(type_colors[type] + cur_time + "::",type.ljust(padding), ":", message, Style.RESET_ALL)
+    print(type_colors[type] + cur_time + ":", message, Style.RESET_ALL)
 
 def info(message):
     log('Info', message)
