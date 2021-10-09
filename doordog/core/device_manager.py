@@ -146,14 +146,25 @@ class DeviceListener:
             self.post_event(formatedUID, True)
         else:
             endpoint = self.configs['endpoints']['post-scan']
-            response = requests.post(endpoint, data=data, timeout=3)
-            logger.info("Response from " + endpoint + " - Status code = " + str(response.status_code))
-            if response.status_code == 200 or response.status_code == 201:
-                self.post_event(formatedUID, False)
-            elif response.status_code == 404:
-                print(response)
-            else:
-                print(response)
+            try:
+                response = requests.post(endpoint, data=data, timeout=3)
+                logger.info("Response from " + endpoint + " - Status code = " + str(response.status_code))
+                
+                # For test purpose, since I have no API returning the exact required json data
+                if response.status_code in [ 200 ]:
+                    self.post_event(formatedUID, False)
+                # Response with a body and json data
+                elif response.status_code in [ 201, 202 ]:
+                    self.validate_response(response)
+                
+                # For all other responses (url might be wrong or server is not acccessible)
+                else:
+                    errStr = "" + str(response.status_code) + " " + response.reason + ": " + response.url
+                    logger.error(errStr)
+            except Exception as e:
+                logger.error(e)
+            finally:
+                pass
     #---------------------------------------------------------------------
     def post_event(self, uid, error):
         try:
@@ -163,7 +174,17 @@ class DeviceListener:
             logger.error("Frame assigned to reader '" + self.get_name() + "' have been closed!")
 
     #---------------------------------------------------------------------
-    def jprint(self, obj):
-        # create a formatted string of the Python JSON object
-        text = json.dumps(obj, sort_keys=True, indent=4)
-        print(text)
+    def validate_response(self, response: requests.Response, uid = ""):
+        if response.text:
+            try:
+                responses = response.json()
+                if responses:
+                    data = responses['data']['username']
+                    if data:
+                        self.post_event(str(data), False)
+                    else:
+                        logger.error("API did not return a username to display")
+            except ValueError as e:
+                logger.error(e)
+            except (IndexError, KeyError, TypeError) as e:
+                logger.error(e)
