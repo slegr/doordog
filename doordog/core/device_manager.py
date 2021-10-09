@@ -40,7 +40,6 @@ class DeviceManager(threading.Thread):
 
     #---------------------------------------------------------------------
     def stop(self):
-        logger.info("Stopping Device Manager")
         self.stopped = True
         for device in self.devices:
             device.stop()
@@ -97,7 +96,6 @@ class DeviceListener:
 
     #---------------------------------------------------------------------
     def stop(self):
-        logger.info("Stopping Device '" + self.get_name() + "'")
         self.stopped = True
         self.device.ungrab()
         self.thread.join()

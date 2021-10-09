@@ -29,6 +29,9 @@ class DoorDog:
             # frame = MyFrame(pos=wx.Point(1920,0))
             self.frames[dev.get_name()] = ui.MyFrame(pos=wx.Point(0,0))
             dev.set_frame_ref(self.frames[dev.get_name()])
+        if len(self.devices) <= 0:
+            logger.warning("No device detected :(")
+            logger.warning("Please make sure to connect devices before launching DoorDog")
         self.device_manager.start()
         self.app.MainLoop()
         self.device_manager.stop()
