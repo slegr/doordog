@@ -9,7 +9,7 @@ import wx
 from datetime import datetime
 import doordog.events.read_tag as evt
 import doordog.utils.configs as config
-
+import doordog.utils.logger as logger
 
 class DeviceManager(threading.Thread):
     """
@@ -26,7 +26,7 @@ class DeviceManager(threading.Thread):
         self.lock = threading.Lock()
         self.stopped = False
         self.lock.acquire()
-        self.listening_devices = []
+        self.devices = []
         # To change with for all possible names in config.yml
         self.device_name = self.configs['devices']['names'][0]
         self.update_devices()
@@ -40,17 +40,18 @@ class DeviceManager(threading.Thread):
 
     #---------------------------------------------------------------------
     def stop(self):
+        logger.info("Stopping Device Manager")
         self.stopped = True
-        for device in self.listening_devices:
+        for device in self.devices:
             device.stop()
 
     #---------------------------------------------------------------------
     def get_devices(self):
-        return self.listening_devices
+        return self.devices
 
     #---------------------------------------------------------------------
     def device_in_listeners(self, device):
-        for listener in self.listening_devices:
+        for listener in self.devices:
             if listener.get_name() == device.phys:
                 return True
         return False
@@ -70,19 +71,13 @@ class DeviceManager(threading.Thread):
             if device.name == self.device_name and not self.device_in_listeners(device):
                 self.add_device(device)
         # Remove missing devices listeners
-        for device in self.listening_devices:
+        for device in self.devices:
             if not self.listener_in_devices(found_devices, device):
-                self.listening_devices.remove(device)
+                self.devices.remove(device)
 
     #---------------------------------------------------------------------
     def add_device(self, device):
-        self.listening_devices.append(DeviceListener(device))
-
-    #---------------------------------------------------------------------
-    def print_devices(self):
-        for device in self.listening_devices:
-            print(device.get_name())
-
+        self.devices.append(DeviceListener(device))
 
 class DeviceListener:
     """
@@ -97,11 +92,12 @@ class DeviceListener:
         self.device.grab()
         self.thread = threading.Thread(target=self.loop, daemon=True)
         self.stopped = False
-        print('New Device: ', self.get_name(), self.device.path)
+        logger.info("New device connected : " + self.get_name())
         self.thread.start()
 
     #---------------------------------------------------------------------
     def stop(self):
+        logger.info("Stopping Device '" + self.get_name() + "'")
         self.stopped = True
         self.device.ungrab()
         self.thread.join()
@@ -119,7 +115,6 @@ class DeviceListener:
                 if event:
                     if event.type == evdev.ecodes.EV_KEY and event.value == 1:
                         e_code = event.code - 1
-                        # print(event.code)
                         if e_code >= 1 and e_code <= 10:
                             if e_code == 10:
                                 uid.append(str(0))
@@ -130,6 +125,7 @@ class DeviceListener:
                             self.code_scanned(uid)
                             uid = []
         except OSError:
+            self.stop()
             del self
 
     #---------------------------------------------------------------------
@@ -139,7 +135,8 @@ class DeviceListener:
     #---------------------------------------------------------------------
     def code_scanned(self, uid):
         formatedUID = uid=(''.join(uid))
-        parameters = {
+        logger.info("Code Scanned: " + formatedUID)
+        data = {
             'reader': self.get_name(),
             'uid': uid,
             'when': str(datetime.now())
@@ -147,9 +144,12 @@ class DeviceListener:
         # Check for blocked tags
         blocked_tags = self.configs['blocked-tags']
         if blocked_tags and formatedUID in blocked_tags:
+            logger.warning("Tag " + formatedUID + " is blocked!")
             self.post_event(formatedUID, True)
-        else:    
-            response = requests.post(self.configs['endpoint']['url'], data=parameters, timeout=3)
+        else:
+            endpoint = self.configs['endpoint']['url']
+            response = requests.post(endpoint, data=data, timeout=3)
+            logger.info("Response from " + endpoint + " - Status code = " + str(response.status_code))
             if response.status_code == 200 or response.status_code == 201:
                 self.post_event(formatedUID, False)
             elif response.status_code == 404:
@@ -162,7 +162,7 @@ class DeviceListener:
             newEvt = evt.OnReadTagEvent(reader=self.get_name(), uid=uid, error=error)
             wx.PostEvent(self.frame_ref, newEvt)
         except RuntimeError:
-            print("Error: Frame assigned to reader", self.get_name(), "have been closed!")
+            logger.error("Frame assigned to reader '" + self.get_name() + "' have been closed!")
 
     #---------------------------------------------------------------------
     def jprint(self, obj):
