@@ -12,11 +12,23 @@ global-config:
   message: "Please scan here!"
   # Monitors settings
   monitors:
-    count: 2
+    # 0 = no monitors, no display, priority: 0
+    # 1 = everything displayed on same monitor
+    # 2+ = typicaly 1 monitor per reader, but can be less
+    count: 1
+    # Split screen depending on monitors count and readers count
+    # Ex : 1 monitor + 4 readers = 1 screen with 4 equal-size windows
+    # Takes over fullscreen -> priority: 1
+    # splitscreen: true
+    # Readers per monitors. e.g. 8 = (col:4 x row:2)
+    rpm: 2
+    # Windows are set to fullscreen
+    # Only works if monitors count == readers count
+    fullscreen: false
+    # Monitors resolution, important for window sizes
     default-resolution:
       width: 1920
       height: 1080
-    fullscreen: true
   # Scanner devices settings
   devices:
     names:

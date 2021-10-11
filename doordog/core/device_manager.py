@@ -20,8 +20,9 @@ class DeviceManager(threading.Thread):
     To stop the thread, simply call stop() on the object
     """
     #---------------------------------------------------------------------
-    def __init__(self):
+    def __init__(self, app_ref):
         threading.Thread.__init__(self)
+        self.app_ref = app_ref
         self.configs = config.get_global_config()
         self.setDaemon(1)
         self.lock = threading.Lock()
@@ -30,13 +31,13 @@ class DeviceManager(threading.Thread):
         self.devices = []
         # To change with for all possible names in config.yml
         self.device_name = self.configs['devices']['names'][0]
-        self.update_devices()
+        self.collect_devices()
 
     #---------------------------------------------------------------------
     def run(self):
         self.lock.release()
         while not self.stopped:
-            self.update_devices()
+            # self.update_devices()
             sleep(1)
 
     #---------------------------------------------------------------------
@@ -50,34 +51,24 @@ class DeviceManager(threading.Thread):
         return self.devices
 
     #---------------------------------------------------------------------
-    def device_in_listeners(self, device):
-        for listener in self.devices:
-            if listener.get_name() == device.phys:
-                return True
-        return False
+    def get_device_count(self):
+        return len(self.devices)
 
     #---------------------------------------------------------------------
-    def listener_in_devices(self, devices, listener):
-        for device in devices:
-            if device.phys == listener.get_name():
-                return True
-        return False
+    def get_device_names(self):
+        return [dev.get_name() for dev in self.devices]
     
     #---------------------------------------------------------------------
-    def update_devices(self):
+    def collect_devices(self):
         found_devices = [evdev.InputDevice(dev) for dev in evdev.list_devices()]
         # Add new connected devices
         for device in found_devices:
-            if device.name == self.device_name and not self.device_in_listeners(device):
+            if device.name == self.device_name:
                 self.add_device(device)
-        # Remove missing devices listeners
-        for device in self.devices:
-            if not self.listener_in_devices(found_devices, device):
-                self.devices.remove(device)
 
     #---------------------------------------------------------------------
     def add_device(self, device):
-        self.devices.append(DeviceListener(device))
+        self.devices.append(DeviceListener(device, self.app_ref))
 
 class DeviceListener:
     """
@@ -86,8 +77,9 @@ class DeviceListener:
     It is prefered to let this responsability to the DeviceManager.
     """
     #---------------------------------------------------------------------
-    def __init__(self, device):
+    def __init__(self, device, app_ref):
         self.device = device
+        self.app_ref = app_ref
         self.configs = config.get_global_config()
         self.device.grab()
         self.thread = threading.Thread(target=self.loop, daemon=True)
@@ -100,10 +92,6 @@ class DeviceListener:
         self.stopped = True
         self.device.ungrab()
         self.thread.join()
-
-    #---------------------------------------------------------------------
-    def set_frame_ref(self, frame_ref):
-        self.frame_ref = frame_ref
 
     #---------------------------------------------------------------------
     def loop(self):
@@ -170,7 +158,7 @@ class DeviceListener:
     def post_event(self, uid, error):
         try:
             newEvt = evt.OnReadTagEvent(reader=self.get_name(), uid=uid, error=error)
-            wx.PostEvent(self.frame_ref, newEvt)
+            wx.PostEvent(self.app_ref , newEvt)
         except RuntimeError:
             logger.error("Frame assigned to reader '" + self.get_name() + "' have been closed!")
 

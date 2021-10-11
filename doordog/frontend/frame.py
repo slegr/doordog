@@ -1,9 +1,7 @@
-""""""
+#!/usr/bin/env python3
 
-from typing import final
 import wx
 import wx.lib.newevent
-import doordog.events.read_tag as evt
 import doordog.utils.configs as config
 import doordog.utils.logger as logger
 import os
@@ -11,7 +9,7 @@ import os
 os.environ['PYGAME_HIDE_SUPPORT_PROMPT'] = "hide"
 from pygame import mixer
 
-class MyPanel(wx.Panel):
+class DDPanel(wx.Panel):
     """
     A class who represent a Panel in a parent Window and a window only contains
     a single panel.
@@ -44,36 +42,34 @@ class MyPanel(wx.Panel):
         self.sizer.AddStretchSpacer()
         self.SetSizerAndFit(self.sizer)
 
-        self.Bind(wx.EVT_KEY_DOWN, self.onKey)
+        # self.Bind(wx.EVT_KEY_DOWN, self.onKey)
         
-    #----------------------------------------------------------------------
-    def onKey(self, event):
-        """
-        Check for ESC key press and exit is ESC is pressed
-        """
-        key_code = event.GetKeyCode()
-        if key_code == wx.WXK_ESCAPE:
-            self.GetParent().Close()
-        else:
-            event.Skip()
+    # #----------------------------------------------------------------------
+    # def onKey(self, event):
+    #     """
+    #     Check for ESC key press and exit is ESC is pressed
+    #     """
+    #     key_code = event.GetKeyCode()
+    #     if key_code == wx.WXK_ESCAPE:
+    #         self.GetParent().Close()
+    #     else:
+    #         event.Skip()
 
 
-class MyFrame(wx.Frame):
+class DDFrame(wx.Frame):
     """
     A class who represent a Frame (Window) which contains a single Panel.
     This class is also responsible for watching tag events and  editing its panel
     appearence.
     """
     #----------------------------------------------------------------------
-    def __init__(self, pos):
+    def __init__(self, x, y, width, height):
         """Constructor"""
         self.configs = config.get_global_config()
-        wx.Frame.__init__(self, None, title=self.configs['window-title'], pos=pos)
-        self.panel = MyPanel(self)
+        wx.Frame.__init__(self, None, title=self.configs['window-title'], pos=wx.Point(x, y), size=wx.Size(width, height))
+        self.panel = DDPanel(self)
         self.timer = wx.Timer(self)
         self.Bind(wx.EVT_TIMER, self.reset, self.timer)
-        self.Bind(evt.EVT_ON_READ_TAG_EVENT, self.on_read)
-
         self.reset(None)
         
         if self.configs['monitors']['fullscreen']:    
@@ -84,11 +80,7 @@ class MyFrame(wx.Frame):
             # self.Maximize(True)
 
     #----------------------------------------------------------------------
-    def on_read(self, evt):
-        self.set_text(evt.uid, evt.error)
-
-    #----------------------------------------------------------------------
-    def set_text(self, text, error):
+    def alert(self, text, error):
         bg_colour = wx.Colour()
         fg_colour = wx.Colour()
         if error:
