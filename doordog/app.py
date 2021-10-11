@@ -1,6 +1,7 @@
-""""""
+#!/usr/bin/env python3
+
 import doordog.core.device_manager as dm
-import doordog.frontend.ui as ui
+import  doordog.frontend.ui_manager as ui
 import doordog.utils.configs as config
 import doordog.utils.logger as logger
 import wx
@@ -9,30 +10,21 @@ class DoorDog:
     """
     Main class of the system representing the app entrance.
     The object should only be created once in the project and preferably in
-    the __main__.py file. t creates the main components required for the system
+    the __main__.py file. It creates the main components required for the system
     to work and start it self by starting the other components thread.
-    It also creates and assignes a frame (window) for each devices.
     """
     #---------------------------------------------------------------------
     def __init__(self):
-        logger.info("DoorDog launching...")
-        self.app = wx.App(False)
-        self.device_manager = dm.DeviceManager()
-        self.devices = self.device_manager.get_devices()
-        self.frames = {}
+        logger.info("Launching DoorDog...")
+        self.ui_manager = ui.UIManager()
+        self.device_manager = dm.DeviceManager(self.ui_manager.get_app_ref())
+        self.ui_manager.create_frames(self.device_manager.get_device_names())
         self.start()
 
     #---------------------------------------------------------------------
     def start(self):
-        for dev in self.devices:
-            # For multiple monitors, need to assign position for each window
-            # frame = MyFrame(pos=wx.Point(1920,0))
-            self.frames[dev.get_name()] = ui.MyFrame(pos=wx.Point(0,0))
-            dev.set_frame_ref(self.frames[dev.get_name()])
-        if len(self.devices) <= 0:
-            logger.warning("No device detected :(")
-            logger.warning("Please make sure to connect devices before launching DoorDog")
         self.device_manager.start()
-        self.app.MainLoop()
+        # Blocking loop
+        self.ui_manager.start()
         self.device_manager.stop()
         self.device_manager.join()

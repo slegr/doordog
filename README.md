@@ -15,7 +15,7 @@ It is built on python 3.8 and uses wxpython as GUI. In other words, DoorDog is a
 
 ## Requirements
 - Debian like environment (Ubuntu, Raspbian, etc.)
-- Python 3.8
+- Python 3.8 (alredy installed in newer debian-like systems, like Ubuntu 20.04 or Raspberry Pi OS)
 - wxPython (installed with installation scripts)
 
 ## Setup and Installation
@@ -35,22 +35,27 @@ sudo reboot
 
 ## How to use
 
-Make sure your USB Scanner devices are plugged in the machine and make sure they work well by going on a text file and scanning an RFID/NFC card or chip. The ID writen on the card should be printed in the file.
+1. Connect your usb RFID readers to the computer. Make sure they work by creating a text file and scanning an RFID/NFC card or chip. The ID writen on the card should print as text in the file.
 
-Edit the `configs/config.yml` with all your personnal configs. To get the name of your device, run the folling command and find the one(s) that correspond to your device's specs.
-```sh
-cat /proc/bus/input/devices
-```
-For example, here is the device I use and the name I need to add in `configs/config.yml`
-![result_devices](https://user-images.githubusercontent.com/17283078/135957548-e9f31f00-a518-48a2-a78f-c201b7261056.jpg)
+2. Make a backup of `configs/config.yml` and edit the file with your own configs. Do not remove lines or parameter since some part of the program are dependent of it. Only edit it with your own preferences. To get your devices names, run the folling command and find the one(s) that correspond to your devices' specs.
+
+    ```sh
+    cat /proc/bus/input/devices
+    ```
+
+    For example, here is the device I use and the name I need to add in `configs/config.yml`
+
+    ![result_devices](https://user-images.githubusercontent.com/17283078/135957548-e9f31f00-a518-48a2-a78f-c201b7261056.jpg)
 
 
-Run the following script to launch the application
-```sh
-./start.sh
-```
+3. Run the following script to launch the application. You will be asked for your password as sudoers, unless you are root by default (e.g. on Raspbian).
+    
+    ```sh
+    ./start.sh
+    ```
 
-## Authors
+
+## Author
 - slegr - https://github.com/slegr
 
 ## License

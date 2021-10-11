@@ -19,4 +19,5 @@ user=$USER
 sudo python3 ./doordog/utils/own_devices.py $user
 
 # Start doordog
+# This program cannot be started as sudo since some feature of wxpython won't work, e.g. the sound
 python3 -m doordog
