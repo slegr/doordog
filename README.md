@@ -1,6 +1,5 @@
 # DoorDog 
 ![doordog_white](https://user-images.githubusercontent.com/17283078/135960499-7a949665-9fb9-41ea-9fa2-d746f8846987.png)
-**[![Python package](https://github.com/slegr/doordog/actions/workflows/python-package.yml/badge.svg?branch=main)](https://github.com/slegr/doordog/actions/workflows/python-package.yml)**
 
 ## Table of contents
 * [General info](#general-info)
